@@ -20,7 +20,6 @@ class EntryPointTest extends PHPUnit_Framework_TestCase
 	 */
 	public static function setUpBeforeClass()
 	{
-		require_once 'libraries/joomla/factory.php';
 	}
 
 	/**
@@ -64,48 +63,5 @@ class EntryPointTest extends PHPUnit_Framework_TestCase
 	 */
 	public static function tearDownAfterClass()
 	{
-	}
-
-	/**
-	 * @since   4.0
-	 */
-	public function casesEntryPoints()
-	{
-		return [
-			'cli'   => [
-				'cli',
-				'cli/joomla.php',
-				'JApplicationCli'
-			],
-			'api'   => [
-				'api',
-				'api.php',
-				'JApplicationApi'
-			],
-			'web'   => [
-				'site',
-				'index.php',
-				'JApplicationSite'
-			],
-			'admin' => [
-				'administrator',
-				'administrator/index.php',
-				'JApplicationAdministrator'
-			],
-		];
-	}
-
-	/**
-	 * @dataProvider casesEntryPoints
-	 *
-	 * @param string $client
-	 * @param string $entryPoint
-	 * @param string $applicationType
-	 *
-	 * @since        4.0
-	 */
-	public function testEntryPointsExist($client, $entryPoint, $applicationType)
-	{
-		$this->assertFileExists($entryPoint);
 	}
 }
