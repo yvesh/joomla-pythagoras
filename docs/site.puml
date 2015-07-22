@@ -1,0 +1,120 @@
+@startuml
+--> JApplicationSite: «create»
+activate JApplicationSite
+
+note over JApplicationSite: Setup input, config, client
+
+JApplicationSite -> JApplicationSite: fetchConfigurationData()
+    activate JApplicationSite
+    note over JApplicationSite: Read configuration.php
+    JApplicationSite <- JApplicationSite: JConfig
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: loadConfiguration()
+    activate JApplicationSite
+    note over JApplicationSite: Merge config
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+note over JApplicationSite: Setup response
+
+JApplicationSite -> JApplicationSite: loadSystemUris()
+    activate JApplicationSite
+    note over JApplicationSite: Setup uri.base, uri.media
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: loadDispatcher()
+    activate JApplicationSite
+    note over JApplicationSite: Setup dispatcher
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+note over JApplicationSite: Setup profiler, session
+<-- JApplicationSite
+
+
+-> JApplicationSite: execute()
+
+JApplicationSite -> JApplicationSite: doExecute()
+    activate JApplicationSite
+
+    JApplicationSite -> JApplicationSite: initialiseApp()
+        activate JApplicationSite
+        note over JApplicationSite: Setup user, detect language, browser
+            note over JApplicationSite: Setup config, language, editor
+
+            note over JApplicationSite: Load language files
+        JApplicationSite <-- JApplicationSite
+        deactivate JApplicationSite
+
+    JApplicationSite -> JApplicationSite: route()
+        activate JApplicationSite
+
+        JApplicationSite -> JApplicationSite: getRouter()
+            activate JApplicationSite
+            note over JApplicationSite: Locate JRouterSite
+            JApplicationSite <-- JApplicationSite: router
+            deactivate JApplicationSite
+
+        JApplicationSite -> JRouterSite: parse()
+            activate JRouterSite
+            JApplicationSite <- JRouterSite: segments
+            deactivate JRouterSite
+
+        note over JApplicationSite: Merge segments into input
+
+        JApplicationSite <-- JApplicationSite
+        deactivate JApplicationSite
+
+    JApplicationSite -> JApplicationSite: dispatch()
+        activate JApplicationSite
+        note over JApplicationSite: Setup document
+
+        JApplicationSite -> JComponentHelper: renderComponent()
+            activate JComponentHelper
+            note over JComponentHelper: Setup component constants,\nload  template language
+
+            JComponentHelper -> JComponentHelper: executeComponent()
+                activate JComponentHelper
+                note over JComponentHelper: Include component entry point,\ncapture output
+                JComponentHelper <-- JComponentHelper: content
+                deactivate JComponentHelper
+
+            JApplicationSite <-- JComponentHelper: content
+            deactivate JComponentHelper
+
+        JApplicationSite <-- JApplicationSite
+        deactivate JApplicationSite
+
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: render()
+    activate JApplicationSite
+    note over JApplicationSite: Setup template
+
+        JApplicationSite -> JDocument: parse()
+            activate JDocument
+            note over JDocument: @todo
+            JApplicationSite <-- JDocument
+
+        JApplicationSite -> JDocument: render()
+            note over JDocument: @todo
+            JApplicationSite <-- JDocument
+            deactivate JDocument
+
+        JApplicationSite -> JApplicationSite: setBody()
+
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: respond()
+    activate JApplicationSite
+    note over JApplicationSite: Send header, echo body
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+<-- JApplicationSite
+deactivate JApplicationSite
+@enduml

@@ -1,0 +1,80 @@
+@startuml
+--> JApplicationSite: «create»
+activate JApplicationSite
+
+note over JApplicationSite: Setup input, config\n(merge w/JConfig), client,\nuri.base, uri.media,\ndispatcher, profiler, session
+
+note over JApplicationSite: Setup response
+
+<-- JApplicationSite
+
+
+-> JApplicationSite: execute()
+
+JApplicationSite -> JApplicationSite: doExecute()
+    activate JApplicationSite
+
+    note over JApplicationSite: Setup user, language, browser,\nconfig, editor
+
+
+        JApplicationSite --> JRouterSite: «create»
+            activate JRouterSite
+
+        JApplicationSite -> JRouterSite: parse()
+            JApplicationSite <- JRouterSite: vars
+            deactivate JRouterSite
+
+        note over JApplicationSite: Merge vars into input
+
+
+    JApplicationSite -> JApplicationSite: dispatch()
+        activate JApplicationSite
+        note over JApplicationSite: Setup document
+
+        JApplicationSite -> JComponentHelper: renderComponent()
+            activate JComponentHelper
+            note over JComponentHelper: Setup component constants,\nload  template language
+
+            JComponentHelper -> JComponentHelper: executeComponent()
+                activate JComponentHelper
+                note over JComponentHelper: Include component entry point,\ncapture output
+                JComponentHelper <-- JComponentHelper: content
+                deactivate JComponentHelper
+
+            JApplicationSite <-- JComponentHelper: content
+            deactivate JComponentHelper
+
+        JApplicationSite <-- JApplicationSite
+        deactivate JApplicationSite
+
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: render()
+    activate JApplicationSite
+    note over JApplicationSite: Setup template
+
+        JApplicationSite -> JDocument: parse()
+            activate JDocument
+            note over JDocument: @todo
+            JApplicationSite <-- JDocument
+
+        JApplicationSite -> JDocument: render()
+            note over JDocument: @todo
+            JApplicationSite <-- JDocument
+            deactivate JDocument
+
+            note over JApplicationSite: Set body
+
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+JApplicationSite -> JApplicationSite: respond()
+    activate JApplicationSite
+    note over JApplicationSite: Send header, echo body
+    JApplicationSite <-- JApplicationSite
+    deactivate JApplicationSite
+
+<-- JApplicationSite
+deactivate JApplicationSite
+@enduml

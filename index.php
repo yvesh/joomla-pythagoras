@@ -6,14 +6,11 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-/**
- * Constant that is checked in included files to prevent direct access.
- * define() is used in the installation folder rather than "const" to not error for PHP 5.2 and lower
- */
+// Constant that is checked in included files to prevent direct access.
 define('_JEXEC', 1);
 
-// Instantiate the application.
-$app = JFactory::getApplication('site');
+require 'libraries/vendor/autoload.php';
+require 'appropriate/directory/autoload.php';
 
-// Execute the application.
-$app->execute();
+$app      = (new \Joomla\Cms\Application\Factory)->create('site', $_SERVER);
+$app->run();
