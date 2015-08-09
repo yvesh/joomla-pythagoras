@@ -10,7 +10,6 @@ spl_autoload_register(
                 'content' => '/dynamic-renderer.php',
                 'contenttype' => '/dynamic-renderer.php',
                 'dynamicrendererimplementation' => '/dynamic-renderer.php',
-                'joomla\\cms\\application\\application' => '/Application/Application.php',
                 'joomla\\cms\\application\\factory' => '/Application/Factory.php',
                 'joomla\\cms\\cli\\argvparser' => '/Cli/ArgvParser.php',
                 'joomla\\cms\\cli\\input' => '/Cli/Input.php',

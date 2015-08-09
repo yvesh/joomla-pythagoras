@@ -11,6 +11,7 @@ define('_JEXEC', 1);
 
 require 'libraries/vendor/autoload.php';
 require 'appropriate/directory/autoload.php';
+require 'libraries/cms/application/site.php';
 
-$app      = (new \Joomla\Cms\Application\Factory)->create('site', $_SERVER);
-$app->run();
+$app = (new \Joomla\Cms\Application\Factory)->create('site', $_SERVER);
+$app->execute();

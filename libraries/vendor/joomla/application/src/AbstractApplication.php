@@ -8,6 +8,7 @@
 
 namespace Joomla\Application;
 
+use Joomla\Cms\Renderer;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use Psr\Log\LoggerAwareInterface;
@@ -36,6 +37,11 @@ abstract class AbstractApplication implements LoggerAwareInterface
 	 * @since  1.0
 	 */
 	public $input = null;
+
+	/**
+	 * @var Renderer
+	 */
+	protected $renderer;
 
 	/**
 	 * A logger.
@@ -141,6 +147,14 @@ abstract class AbstractApplication implements LoggerAwareInterface
 	}
 
 	/**
+	 * @return Renderer
+	 */
+	public function getRenderer()
+	{
+		return $this->renderer;
+	}
+
+	/**
 	 * Custom initialisation method.
 	 *
 	 * Called at the end of the AbstractApplication::__construct method.
@@ -201,6 +215,18 @@ abstract class AbstractApplication implements LoggerAwareInterface
 	public function setLogger(LoggerInterface $logger)
 	{
 		$this->logger = $logger;
+
+		return $this;
+	}
+
+	/**
+	 * @param Renderer $renderer
+	 *
+	 * @return AbstractApplication
+	 */
+	public function setRenderer($renderer)
+	{
+		$this->renderer = $renderer;
 
 		return $this;
 	}

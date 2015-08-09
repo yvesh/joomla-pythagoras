@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd /var/www/html
+./libraries/vendor/bin/phpunit -c phpunit.xml.dist

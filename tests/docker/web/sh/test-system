@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd /var/www/html/tests/system/webdriver/tests
+/var/www/html/libraries/vendor/bin/phpunit --bootstrap ../bootstrap.php

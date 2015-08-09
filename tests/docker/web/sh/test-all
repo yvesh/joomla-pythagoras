@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+test-unit && test-system && test-codeception

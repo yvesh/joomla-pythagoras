@@ -17,15 +17,8 @@ require_once JPATH_BASE . '/appropriate/directory/autoload.php';
  */
 class FrontendTest extends PHPUnit_Framework_TestCase
 {
-	/** @var Joomla\Cms\Application\Factory */
-	private $applicationFactory = null;
-
-	/**
-	 * This method is called before the first test of this test class is run.
-	 */
-	public static function setUpBeforeClass()
-	{
-	}
+	/** @var array */
+	private $server = null;
 
 	/**
 	 * Sets up the fixture, for example, open a network connection.
@@ -33,26 +26,11 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-	}
-
-	/**
-	 * Performs assertions shared by all tests of a test case.
-	 *
-	 * This method is called before the execution of a test starts
-	 * and after setUp() is called.
-	 */
-	protected function assertPreConditions()
-	{
-	}
-
-	/**
-	 * Performs assertions shared by all tests of a test case.
-	 *
-	 * This method is called before the execution of a test ends
-	 * and before tearDown() is called.
-	 */
-	protected function assertPostConditions()
-	{
+		$this->server = $_SERVER;
+		if (!isset($_SERVER['HTTP_HOST']))
+		{
+			$_SERVER['HTTP_HOST'] = '';
+		}
 	}
 
 	/**
@@ -61,13 +39,7 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-	}
-
-	/**
-	 * This method is called after the last test of this test class is run.
-	 */
-	public static function tearDownAfterClass()
-	{
+		$_SERVER = $this->server;
 	}
 
 	public function casesCliParameters()
@@ -81,13 +53,13 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 				],
 				'expectedParams' => [
 					'script' => 'joomla',
-					'f'    => true,
-					'l'    => true,
-					'g'    => true,
-					'a'    => 'shortOption',
+					'f'      => true,
+					'l'      => true,
+					'g'      => true,
+					'a'      => 'shortOption',
 				],
 			],
-			'spaces' => [
+			'spaces'        => [
 				'argv'           => [
 					'joomla',
 					'-a',
@@ -97,11 +69,11 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 				],
 				'expectedParams' => [
 					'script' => 'joomla',
-					'a'    => 'shortOption',
-					0      => 'argument with spaces'
+					'a'      => 'shortOption',
+					0        => 'argument with spaces'
 				],
 			],
-			'long-options' => [
+			'long-options'  => [
 				'argv'           => [
 					'joomla',
 					'--ansi',
@@ -109,11 +81,11 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 				],
 				'expectedParams' => [
 					'script' => 'joomla',
-					'ansi' => true,
-					'an' => 'otherOption',
+					'ansi'   => true,
+					'an'     => 'otherOption',
 				],
 			],
-			'app-command' => [
+			'app-command'   => [
 				'argv'           => [
 					'joomla',
 					'application',
@@ -124,12 +96,12 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 				'expectedParams' => [
 					'script' => 'joomla',
 					'option' => 'application',
-					'task' => 'command',
-					'an'   => 'option',
-					0      => 'argument',
+					'task'   => 'command',
+					'an'     => 'option',
+					0        => 'argument',
 				],
 			],
-			'stop-parse' => [
+			'stop-parse'    => [
 				'argv'           => [
 					'joomla',
 					'--an=option',
@@ -142,7 +114,7 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 					0        => '--argument',
 				],
 			],
-			'array-param' => [
+			'array-param'   => [
 				'argv'           => [
 					'joomla',
 					'--an=option',
@@ -169,71 +141,122 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expectedParams, $parser->parse($argv));
 	}
 
+	public function casesApplications()
+	{
+		return [
+			'site' => [
+				'client' => 'site',
+				'class' => 'JApplicationSite'
+			],
+			'admin' => [
+				'client' => 'administrator',
+				'class'  => 'JApplicationAdministrator'
+			],
+			/*
+			 * JApplicationCli constructor violates the LSP
+			 * 'cli' => [
+			 * 	'client' => 'cli',
+			 * 	'class'  => 'JApplicationCli'
+			 * ],
+			 */
+			/*
+			 * InstallationApplicationWeb does not follow naming convention
+			 * 'install' => [
+			 * 	'client' => 'installer',
+			 * 	'class' => 'InstallationApplicationWeb'
+			 * ],
+			 */
+		];
+	}
+
+	/**
+	 * @dataProvider casesApplications
+	 *
+	 * @param array  $client
+	 * @param string $expectedRenderer
+	 */
+	public function testApplicationFactoryCreatesTheAppropriateApplication($client, $expected)
+	{
+		$config = new \Joomla\Registry\Registry(['session' => false]);
+
+		$factory = new Joomla\Cms\Application\Factory;
+
+		/** @var \Joomla\Application\AbstractApplication $app */
+		$app = $factory->create($client, ['argv' => array()], $config);
+
+		$this->assertInstanceOf($expected, $app);
+	}
+
 	public function casesFactory()
 	{
 		return [
 			'cli-default'  => [
-				'server'            => [
+				'server'   => [
 					'argv' => explode(' ', 'joomla -flg --flag -a=shortOption --an=otherOption argument1 argument2'),
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\PlainRenderer',
-				'expectedComponent' => 'default',
-				'expectedTask'      => 'view',
-				'expectedParams'    => [
-					'f'    => true,
-					'l'    => true,
-					'g'    => true,
-					'flag' => true,
-					'a'    => 'shortOption',
-					'an'   => 'otherOption',
-					0      => 'argument1',
-					1      => 'argument2'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\PlainRenderer',
+					'params'   => [
+						'f'    => true,
+						'l'    => true,
+						'g'    => true,
+						'flag' => true,
+						'a'    => 'shortOption',
+						'an'   => 'otherOption',
+						0      => 'argument1',
+						1      => 'argument2'
+					]
 				],
 			],
 			'cli-app'      => [
-				'server'            => [
+				'server'   => [
 					'argv' => explode(' ', 'joomla application -a=shortOption --an=otherOption argument1 argument2'),
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\PlainRenderer',
-				'expectedComponent' => 'com_applications',
-				'expectedTask'      => 'view',
-				'expectedParams'    => [
-					'a'  => 'shortOption',
-					'an' => 'otherOption',
-					0    => 'argument1',
-					1    => 'argument2'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\PlainRenderer',
+					'params'   => [
+						'option' => 'com_application',
+						'a'      => 'shortOption',
+						'an'     => 'otherOption',
+						0        => 'argument1',
+						1        => 'argument2'
+					]
 				],
 			],
 			'cli-cmd'      => [
-				'server'            => [
+				'server'   => [
 					'argv' => explode(' ', 'joomla application command -a=shortOption --an=otherOption argument1 argument2'),
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\PlainRenderer',
-				'expectedComponent' => 'com_applications',
-				'expectedTask'      => 'command',
-				'expectedParams'    => [
-					'a'  => 'shortOption',
-					'an' => 'otherOption',
-					0    => 'argument1',
-					1    => 'argument2'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\PlainRenderer',
+					'params'   => [
+						'option' => 'com_application',
+						'task'   => 'command',
+						'a'      => 'shortOption',
+						'an'     => 'otherOption',
+						0        => 'argument1',
+						1        => 'argument2'
+					]
 				],
 			],
 			'cli-ansi'     => [
-				'server'            => [
+				'server'   => [
 					'argv' => explode(' ', 'joomla application command --ansi -a=shortOption --an=otherOption argument1 argument2'),
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\AnsiRenderer',
-				'expectedComponent' => 'com_applications',
-				'expectedTask'      => 'command',
-				'expectedParams'    => [
-					'a'  => 'shortOption',
-					'an' => 'otherOption',
-					0    => 'argument1',
-					1    => 'argument2'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\AnsiRenderer',
+					'params'   => [
+						'option' => 'com_application',
+						'task'   => 'command',
+						'a'      => 'shortOption',
+						'an'     => 'otherOption',
+						0        => 'argument1',
+						1        => 'argument2'
+					]
 				],
 			],
 			'html-default' => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD'       => 'GET',
 					'REQUEST_URI'          => '/',
 					'SERVER_PROTOCOL'      => 'HTTP/1.1',
@@ -241,13 +264,13 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 					'HTTP_ACCEPT_LANGUAGE' => 'de,en-US;q=0.7,en;q=0.3',
 					'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
-				'expectedComponent' => 'default',
-				'expectedTask'      => 'browse',
-				'expectedParams'    => [],
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
+					'params'   => []
+				],
 			],
 			'html-index'   => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD'       => 'GET',
 					'REQUEST_URI'          => '/index.php',
 					'SERVER_PROTOCOL'      => 'HTTP/1.1',
@@ -255,13 +278,13 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 					'HTTP_ACCEPT_LANGUAGE' => 'de,en-US;q=0.7,en;q=0.3',
 					'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
-				'expectedComponent' => 'default',
-				'expectedTask'      => 'browse',
-				'expectedParams'    => [],
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
+					'params'   => []
+				],
 			],
 			'json-default' => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD'       => 'GET',
 					'REQUEST_URI'          => '/',
 					'SERVER_PROTOCOL'      => 'HTTP/1.1',
@@ -269,13 +292,13 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 					'HTTP_ACCEPT_LANGUAGE' => 'de,en-US;q=0.7,en;q=0.3',
 					'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\JsonRenderer',
-				'expectedComponent' => 'default',
-				'expectedTask'      => 'browse',
-				'expectedParams'    => [],
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\JsonRenderer',
+					'params'   => []
+				],
 			],
 			'xml-default'  => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD'       => 'GET',
 					'REQUEST_URI'          => '/',
 					'SERVER_PROTOCOL'      => 'HTTP/1.1',
@@ -283,50 +306,54 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 					'HTTP_ACCEPT_LANGUAGE' => 'de,en-US;q=0.7,en;q=0.3',
 					'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\XmlRenderer',
-				'expectedComponent' => 'default',
-				'expectedTask'      => 'browse',
-				'expectedParams'    => [],
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\XmlRenderer',
+					'params'   => []
+				],
 			],
+
 			/*
 			 * User component
 			 */
-
 			'cli-user'     => [
-				'server'            => [
-					'argv' => explode(' ', 'joomla user --id=42'),
+				'server'   => [
+					'argv' => explode(' ', 'joomla users --id=42'),
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\PlainRenderer',
-				'expectedComponent' => 'com_users',
-				'expectedTask'      => 'view',
-				'expectedParams'    => [
-					'id' => '42'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\PlainRenderer',
+					'params'   => [
+						'option' => 'com_users',
+						'id'     => '42'
+					]
 				],
 			],
 			'html-user'    => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD' => 'GET',
 					'REQUEST_URI'    => '/index.php?option=com_users&task=view&id=42',
 					'HTTP_ACCEPT'    => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
-				'expectedComponent' => 'com_users',
-				'expectedTask'      => 'view',
-				'expectedParams'    => [
-					'id' => '42'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\HtmlRenderer',
+					'params'   => [
+						'option' => 'com_users',
+						'task'   => 'view',
+						'id'     => '42'
+					]
 				],
 			],
 			'xml-user'     => [
-				'server'            => [
+				'server'   => [
 					'REQUEST_METHOD' => 'GET',
 					'REQUEST_URI'    => '/users/42',
 					'HTTP_ACCEPT'    => 'application/xml',
 				],
-				'expectedRenderer'  => 'Joomla\\Cms\\Renderer\\XmlRenderer',
-				'expectedComponent' => 'com_users',
-				'expectedTask'      => 'view',
-				'expectedParams'    => [
-					'id' => '42'
+				'expected' => [
+					'renderer' => 'Joomla\\Cms\\Renderer\\XmlRenderer',
+					'params'   => [
+						'option' => 'com_users',
+						'path'   => '/users/42'
+					]
 				],
 			],
 		];
@@ -338,24 +365,22 @@ class FrontendTest extends PHPUnit_Framework_TestCase
 	 * @param array  $server
 	 * @param string $expectedRenderer
 	 */
-	public function testApplicationFactoryCreatesTheAppropriateApplication($server, $expectedRenderer, $expectedComponent, $expectedTask, $expectedParams)
+	public function testApplicationFactoryInitializesTheApplicationProperly($server, $expected)
 	{
-		$factory = new Joomla\Cms\Application\Factory;
-		$app     = $factory->create('site', $server);
+		$config = new \Joomla\Registry\Registry(['session' => false]);
 
-		$this->assertInstanceOf('Joomla\\Cms\\Application\\Application', $app, "App is not an application");
+		$factory = new Joomla\Cms\Application\Factory;
+
+		/** @var JApplicationSite $app */
+		$app = $factory->create('site', $server, $config);
+
+		$this->assertInstanceOf('JApplicationSite', $app);
 
 		$renderer = $app->getRenderer();
-		$this->assertInstanceOf($expectedRenderer, $renderer, "Expected class $expectedRenderer, got " . get_class($renderer));
+		$this->assertInstanceOf($expected['renderer'], $renderer, "Expected class {$expected['renderer']}, got " . get_class($renderer));
 
-		$option = $app->getOption();
-		$this->assertEquals($expectedComponent, $option, "Expected option $expectedComponent, got $option");
-
-		$task = $app->getTask();
-		$this->assertEquals($expectedTask, $task, "Expected task $expectedTask, got $task");
-
-		$params = $app->getParams();
-		$this->assertEquals($expectedParams, $params);
+		$params = $app->input->getArray();
+		$this->assertEquals($expected['params'], $params);
 	}
 
 	public function casesAcceptHeaders()

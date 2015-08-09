@@ -1,0 +1,16 @@
+web:
+  build: docker/web
+  volumes:
+    - ..:/var/www/html
+  ports:
+    - "80:80"
+  links:
+    - mysql
+
+mysql:
+  image: greencape/mariadb
+  environment:
+    MYSQL_DATABASE: test-db
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: db-user
+    MYSQL_PASSWORD: db-pass
