@@ -6,12 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Joomla\\Utilities\\Tests\\' => array($vendorDir . '/joomla/utilities/Tests'),
     'Joomla\\Utilities\\' => array($vendorDir . '/joomla/utilities/src'),
     'Joomla\\Uri\\Tests\\' => array($vendorDir . '/joomla/uri/Tests'),
     'Joomla\\Uri\\' => array($vendorDir . '/joomla/uri/src'),
     'Joomla\\String\\Tests\\' => array($vendorDir . '/joomla/string/Tests'),
     'Joomla\\String\\' => array($vendorDir . '/joomla/string/src'),
+    'Joomla\\Session\\' => array($vendorDir . '/joomla/session/src'),
     'Joomla\\Registry\\Tests\\' => array($vendorDir . '/joomla/registry/Tests'),
     'Joomla\\Registry\\' => array($vendorDir . '/joomla/registry/src'),
     'Joomla\\Input\\Tests\\' => array($vendorDir . '/joomla/input/Tests'),
