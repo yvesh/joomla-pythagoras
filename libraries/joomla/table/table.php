@@ -207,7 +207,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 		$event = AbstractEvent::create('onTableObjectCreate', [
 			'subject'	=> $this,
 		]);
-		$this->getDispatcher()->dispatch('onTableObjectCreate', $event);
+		$this->getDispatcher()->triggerEvent($event);
 	}
 
 	/**
@@ -570,7 +570,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 		$event = AbstractEvent::create('onTableBeforeReset', [
 			'subject'	=> $this,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeReset', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// Get the default values for the class from the table.
 		foreach ($this->getFields() as $k => $v)
@@ -588,7 +588,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 		$event = AbstractEvent::create('onTableAfterReset', [
 			'subject'	=> $this,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterReset', $event);
+		$this->getDispatcher()->triggerEvent($event);
 	}
 
 	/**
@@ -596,8 +596,8 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 	 * method only binds properties that are publicly accessible and optionally
 	 * takes an array of properties to ignore when binding.
 	 *
-	 * @param   mixed  $src     An associative array or object to bind to the JTable instance.
-	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
+	 * @param   object|array  $src     An associative array or object to bind to the JTable instance.
+	 * @param   mixed         $ignore  An optional array or space separated list of properties to ignore while binding.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -611,7 +611,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'src'		=> $src,
 			'ignore'	=> $ignore
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeBind', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 
 		// JSON encode any fields required
@@ -662,7 +662,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'src'		=> $src,
 			'ignore'	=> $ignore
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterBind', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -691,7 +691,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'keys'		=> $keys,
 			'reset'		=> $reset,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeLoad', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		if (empty($keys))
 		{
@@ -774,7 +774,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'result'		=> &$result,
 			'row'			=> $row,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterLoad', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return $result;
 	}
@@ -797,7 +797,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 		$event = AbstractEvent::create('onTableCheck', [
 			'subject'		=> $this,
 		]);
-		$this->getDispatcher()->dispatch('onTableCheck', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -826,7 +826,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'updateNulls'	=> $updateNulls,
 			'k'				=> $k,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeStore', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 
 		$currentAssetId = 0;
@@ -943,7 +943,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'result'	=> &$result,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterStore', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return $result;
 	}
@@ -1049,7 +1049,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeDelete', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 
 		// If tracking assets, remove the asset first.
@@ -1085,7 +1085,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterDelete', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -1116,7 +1116,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'userId'	=> $userId,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeCheckout', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// If there is no checked_out or checked_out_time field, just return true.
 		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
@@ -1170,7 +1170,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'userId'	=> $userId,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterCheckout', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -1194,7 +1194,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeCheckin', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// If there is no checked_out or checked_out_time field, just return true.
 		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
@@ -1246,7 +1246,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterCheckin', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -1310,7 +1310,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeHit', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// If there is no hits field, just return true.
 		if (!property_exists($this, 'hits'))
@@ -1358,7 +1358,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'subject'	=> $this,
 			'pk'		=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterHit', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -1507,7 +1507,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'query'		=> $query,
 			'where'		=> $where,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeReorder', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		$this->_db->setQuery($query);
 		$rows = $this->_db->loadObjectList();
@@ -1538,7 +1538,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'rows'		=> &$rows,
 			'where'		=> $where,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterReorder', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -1605,7 +1605,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'delta'		=> $delta,
 			'where'		=> $where,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeMove', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// Select the first row with the criteria.
 		$this->_db->setQuery($query, 0, 1);
@@ -1651,7 +1651,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'delta'		=> $delta,
 			'where'		=> $where,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterMove', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 
 		return true;
@@ -1685,7 +1685,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'state'		=> $state,
 			'userId'	=> $userId,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforePublish', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		if (!is_null($pks))
 		{
@@ -1793,7 +1793,7 @@ abstract class JTable extends JObject implements JTableInterface, DispatcherAwar
 			'state'		=> $state,
 			'userId'	=> $userId,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterPublish', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}

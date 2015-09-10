@@ -83,47 +83,59 @@ class JEditor implements DispatcherAwareInterface
 		$this->setDispatcher($dispatcher);
 
 		// Register the getButtons event
-		$this->getDispatcher()->addListener('getButtons', function(AbstractEvent $event) {
-			$editor = $event->getArgument('editor', null);
-			$buttons = $event->getArgument('buttons', null);
-			$result = $event->getArgument('result', []);
+		$this->getDispatcher()->addListener(
+			function(AbstractEvent $event) {
+				$editor = $event->getArgument('editor', null);
+				$buttons = $event->getArgument('buttons', null);
+				$result = $event->getArgument('result', []);
 
-			$newResult = $this->getButtons($editor, $buttons);
-			$newResult = (array) $newResult;
+				$newResult = $this->getButtons($editor, $buttons);
+				$newResult = (array) $newResult;
 
-			$event['result'] = array_merge($result, $newResult);
-		});
+				$event['result'] = array_merge($result, $newResult);
+			},
+			['getButtons' => \Joomla\Event\Priority::NORMAL]
+		);
 
 		// Register the getContent event
-		$this->getDispatcher()->addListener('getContent', function(AbstractEvent $event) {
-			$editor = $event->getArgument('editor', null);
-			$result = $event->getArgument('result', []);
+		$this->getDispatcher()->addListener(
+			function(AbstractEvent $event) {
+				$editor = $event->getArgument('editor', null);
+				$result = $event->getArgument('result', []);
 
-			$result[] = $this->getContent($editor);
+				$result[] = $this->getContent($editor);
 
-			$event['result'] = $result;
-		});
+				$event['result'] = $result;
+			},
+			['getContent' => \Joomla\Event\Priority::NORMAL]
+		);
 
 		// Register the setContent event
-		$this->getDispatcher()->addListener('getContent', function(AbstractEvent $event) {
-			$editor = $event->getArgument('editor', null);
-			$html = $event->getArgument('html', null);
-			$result = $event->getArgument('result', []);
+		$this->getDispatcher()->addListener(
+			function(AbstractEvent $event) {
+				$editor = $event->getArgument('editor', null);
+				$html = $event->getArgument('html', null);
+				$result = $event->getArgument('result', []);
 
-			$result[] = $this->setContent($editor, $html);
+				$result[] = $this->setContent($editor, $html);
 
-			$event['result'] = $result;
-		});
+				$event['result'] = $result;
+			},
+			['getContent' => \Joomla\Event\Priority::NORMAL]
+		);
 
 		// Register the save event
-		$this->getDispatcher()->addListener('save', function(AbstractEvent $event) {
-			$editor = $event->getArgument('editor', null);
-			$result = $event->getArgument('result', []);
+		$this->getDispatcher()->addListener(
+			function(AbstractEvent $event) {
+				$editor = $event->getArgument('editor', null);
+				$result = $event->getArgument('result', []);
 
-			$result[] = $this->save($editor);
+				$result[] = $this->save($editor);
 
-			$event['result'] = $result;
-		});
+				$event['result'] = $result;
+			},
+			['save' => \Joomla\Event\Priority::NORMAL]
+		);
 	}
 
 	/**

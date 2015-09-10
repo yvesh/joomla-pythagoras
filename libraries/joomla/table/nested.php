@@ -532,7 +532,7 @@ class JTableNested extends JTable
 		$event = new Event('onBeforeDelete', [
 			'pk'	=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onBeforeDelete', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// Lock the table for writing.
 		if (!$this->_lock())
@@ -659,7 +659,7 @@ class JTableNested extends JTable
 		$event = new Event('onAfterDelete', [
 			'pk'	=> $pk,
 		]);
-		$this->getDispatcher()->dispatch('onAfterDelete', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return true;
 	}
@@ -749,7 +749,7 @@ class JTableNested extends JTable
 			'updateNulls'	=> $updateNulls,
 			'k'				=> $k,
 		]);
-		$this->getDispatcher()->dispatch('onTableBeforeStore', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		// @codeCoverageIgnoreStart
 		if ($this->_debug)
@@ -903,7 +903,7 @@ class JTableNested extends JTable
 			'subject'	=> $this,
 			'result'	=> &$result,
 		]);
-		$this->getDispatcher()->dispatch('onTableAfterStore', $event);
+		$this->getDispatcher()->triggerEvent($event);
 
 		return $result;
 	}

@@ -52,7 +52,7 @@ class TestMockDispatcher
 			'dispatch',
 			'register',
 			'removeListener',
-			'trigger',
+			'triggerEvent',
 			'test',
 		);
 
@@ -95,8 +95,8 @@ class TestMockDispatcher
 	/**
 	 * Callback for the JEventDispatcher trigger method.
 	 *
-	 * @param   string  $event  The event to trigger.
-	 * @param   array   $args   An array of arguments.
+	 * @param   \Joomla\Event\EventInterface  $event  The event to trigger.
+	 * @param   array                         $args   An array of arguments.
 	 *
 	 * @return  array  An array of results from each function call.
 	 *
@@ -104,12 +104,12 @@ class TestMockDispatcher
 	 */
 	public function mockDispatch($event, $args = array())
 	{
-		if (isset(self::$handlers[$event]))
+		if (isset(self::$handlers[$event->getName()]))
 		{
 			// Track the events that were triggered, in order.
 			self::$triggered[] = $event;
 
-			return self::$handlers[$event];
+			return self::$handlers[$event->getName()];
 		}
 
 		return array();
@@ -118,29 +118,29 @@ class TestMockDispatcher
 	/**
 	 * Callback for the JEventDispatcher register method.
 	 *
-	 * @param   string    $event    Name of the event to register handler for.
-	 * @param   Callable  $handler  Callback
-	 * @param   mixed     $return   The mock value to return for the given event handler.
+	 * @param   Callable  $handler    Callback
+	 * @param   string    $eventName  Name of the event to register handler for.
+	 * @param   mixed     $return     The mock value to return for the given event handler.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.3
 	 */
-	public static function mockRegister($event, $handler, $return = null)
+	public static function mockRegister($handler, $eventName, $return = null)
 	{
-		if (empty(self::$handlers[$event]))
+		if (empty(self::$handlers[$eventName]))
 		{
-			self::$handlers[$event] = array();
+			self::$handlers[$eventName] = array();
 		}
 
-		self::$handlers[$event][print_r($handler, true)] = $return;
+		self::$handlers[$eventName][print_r($handler, true)] = $return;
 	}
 
 	/**
 	 * Callback for the JEventDispatcher trigger method.
 	 *
-	 * @param   string  $event  The event to trigger.
-	 * @param   array   $args   An array of arguments.
+	 * @param   \Joomla\Event\EventInterface  $event  The event to trigger.
+	 * @param   array                         $args   An array of arguments.
 	 *
 	 * @return  array  An array of results from each function call.
 	 *
@@ -148,12 +148,12 @@ class TestMockDispatcher
 	 */
 	public static function mockTrigger($event, $args = array())
 	{
-		if (isset(self::$handlers[$event]))
+		if (isset(self::$handlers[$event->getName()]))
 		{
 			// Track the events that were triggered, in order.
 			self::$triggered[] = $event;
 
-			return self::$handlers[$event];
+			return self::$handlers[$event->getName()];
 		}
 
 		return array();

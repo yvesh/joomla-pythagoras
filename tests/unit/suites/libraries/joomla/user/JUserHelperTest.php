@@ -297,26 +297,6 @@ class JUserHelperTest extends TestCaseDatabase
 	}
 
 	/**
-	 * Testing activateUser().
-	 *
-	 * @param   string   $activation  Activation string
-	 * @param   boolean  $expected    Expected params
-	 *
-	 * @dataProvider casesActivateUser
-	 * @covers  JUserHelper::activateUser
-	 * @return  void
-	 *
-	 * @since   12.3
-	 */
-	public function testActivateUser($activation, $expected)
-	{
-		$this->assertEquals(
-			JUserHelper::activateUser($activation),
-			$expected
-		);
-	}
-
-	/**
 	 * Testing hashPassword().
 	 *
 	 * @covers  JUserHelper::hashPassword

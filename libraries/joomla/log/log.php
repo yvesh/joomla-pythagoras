@@ -159,7 +159,7 @@ class JLog
 	 * @param   array    $categories  Types of entry
 	 * @param   boolean  $exclude     If true, all categories will be logged except those in the $categories array
 	 *
-	 * @return  void
+	 * @return  string  The logger's internal signature
 	 *
 	 * @since   11.1
 	 */
@@ -171,7 +171,7 @@ class JLog
 			self::setInstance(new JLog);
 		}
 
-		self::$instance->addLoggerInternal($options, $priorities, $categories, $exclude);
+		return self::$instance->addLoggerInternal($options, $priorities, $categories, $exclude);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class JLog
 	 * @param   array    $categories  Types of entry
 	 * @param   boolean  $exclude     If true, all categories will be logged except those in the $categories array
 	 *
-	 * @return  void
+	 * @return  string  The logger's internal signature
 	 *
 	 * @since   11.1
 	 */
@@ -197,22 +197,7 @@ class JLog
 
 		$options['logger'] = strtolower($options['logger']);
 
-		// Special case - if a Closure object is sent as the callback (in case of JLogLoggerCallback)
-		// Closure objects are not serializable so swap it out for a unique id first then back again later
-		if (isset($options['callback']) && is_a($options['callback'], 'closure'))
-		{
-			$callback = $options['callback'];
-			$options['callback'] = spl_object_hash($options['callback']);
-		}
-
-		// Generate a unique signature for the JLog instance based on its options.
-		$signature = md5(serialize($options));
-
-		// Now that the options array has been serialized, swap the callback back in
-		if (isset($callback))
-		{
-			$options['callback'] = $callback;
-		}
+		$signature = $this->hash($options);
 
 		// Register the configuration if it doesn't exist.
 		if (empty($this->configurations[$signature]))
@@ -224,6 +209,8 @@ class JLog
 			'priorities' => $priorities,
 			'categories' => array_map('strtolower', (array) $categories),
 			'exclude' => (bool) $exclude);
+
+		return $signature;
 	}
 
 	/**
@@ -325,5 +312,52 @@ class JLog
 		}
 
 		return $loggers;
+	}
+
+	/**
+	 * Create a hash
+	 *
+	 * @param   mixed  $subject  The thing to be hashed
+	 * @param   int    $level    Maximum recursion level
+	 *
+	 * @return string
+	 */
+	private function hash($subject, $level = 10)
+	{
+		if ($level <= 0)
+		{
+			return '';
+		}
+
+		if (is_scalar($subject))
+		{
+			return md5($subject);
+		}
+
+		if ($subject instanceof Closure)
+		{
+			return spl_object_hash($subject);
+		}
+
+		$hashValues = array();
+
+		try {
+			$hashValues[] = serialize($subject);
+		}
+		catch (\Exception $e)
+		{
+			if (is_object($subject))
+			{
+				$hashValues[] = get_class($subject);
+				$subject      = get_object_vars($subject);
+			}
+
+			foreach ($subject as $key => $value)
+			{
+				$hashValues[$key] = $this->hash($value, $level - 1);
+			}
+		}
+
+		return md5(serialize($hashValues));
 	}
 }

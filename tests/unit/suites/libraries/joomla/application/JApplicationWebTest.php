@@ -849,7 +849,7 @@ class JApplicationWebTest extends TestCase
 			->method('test')
 			->willReturnSelf();
 
-		$mockDispatcher = $this->getMock('\\Joomla\\Event\\DispatcherInterface', array('addListener', 'dispatch', 'removeListener'), array(), '', false);
+		$mockDispatcher = $this->getMock('\\Joomla\\Event\\DispatcherInterface', array('addListener', 'dispatch', 'removeListener', 'triggerEvent'), array(), '', false);
 		$mockDispatcher
 			->expects($this->any())
 			->method('dispatch')

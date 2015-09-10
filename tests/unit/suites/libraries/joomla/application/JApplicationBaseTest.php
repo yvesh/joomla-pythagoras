@@ -267,17 +267,6 @@ class JApplicationBaseTest extends TestCase
 	}
 
 	/**
-	 * @testdox  Tests that no event is triggered when the application does not have a dispatcher.
-	 *
-	 * @covers  JApplicationBase::triggerEvent
-	 */
-	public function testTriggerEventWithNoDispatcher()
-	{
-		// Validate the event was triggered
-		$this->assertNull($this->class->triggerEvent('onJApplicationBaseTriggerEvent'));
-	}
-
-	/**
 	 * Setup for testing.
 	 *
 	 * @return  void
