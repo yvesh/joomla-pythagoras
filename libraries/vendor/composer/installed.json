@@ -302,6 +302,58 @@
         "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
     },
     {
+        "name": "pear/cache_lite",
+        "version": "v1.7.16",
+        "version_normalized": "1.7.16.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/Cache_Lite.git",
+            "reference": "9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/Cache_Lite/zipball/9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb",
+            "reference": "9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=4.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2014-05-11 15:02:19",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "Cache/Lite.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "./"
+        ],
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Markus Tacker",
+                "homepage": "http://pear.php.net/user/tacker"
+            },
+            {
+                "name": "Fabien Marty",
+                "homepage": "http://pear.php.net/user/fab"
+            }
+        ],
+        "description": "Fast and safe little cache system",
+        "homepage": "https://github.com/pear/Cache_Lite",
+        "keywords": [
+            "cache"
+        ]
+    },
+    {
         "name": "joomla/compat",
         "version": "1.2.0",
         "version_normalized": "1.2.0.0",
@@ -732,109 +784,6 @@
         ]
     },
     {
-        "name": "symfony/yaml",
-        "version": "v2.7.4",
-        "version_normalized": "2.7.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/Yaml.git",
-            "reference": "2dc7b06c065df96cc686c66da2705e5e18aef661"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Yaml/zipball/2dc7b06c065df96cc686c66da2705e5e18aef661",
-            "reference": "2dc7b06c065df96cc686c66da2705e5e18aef661",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.9"
-        },
-        "require-dev": {
-            "symfony/phpunit-bridge": "~2.7"
-        },
-        "time": "2015-08-24 07:13:45",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.7-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Yaml\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Yaml Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "pear/cache_lite",
-        "version": "v1.7.16",
-        "version_normalized": "1.7.16.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/Cache_Lite.git",
-            "reference": "9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/Cache_Lite/zipball/9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb",
-            "reference": "9fa08bd625f86946d41a6e7ff66f6f4ea5c0f0bb",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=4.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "time": "2014-05-11 15:02:19",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "Cache/Lite.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "./"
-        ],
-        "license": [
-            "LGPL"
-        ],
-        "authors": [
-            {
-                "name": "Markus Tacker",
-                "homepage": "http://pear.php.net/user/tacker"
-            },
-            {
-                "name": "Fabien Marty",
-                "homepage": "http://pear.php.net/user/fab"
-            }
-        ],
-        "description": "Fast and safe little cache system",
-        "homepage": "https://github.com/pear/Cache_Lite",
-        "keywords": [
-            "cache"
-        ]
-    },
-    {
         "name": "sebastian/global-state",
         "version": "1.0.0",
         "version_normalized": "1.0.0.0",
@@ -886,6 +835,57 @@
         "keywords": [
             "global state"
         ]
+    },
+    {
+        "name": "symfony/yaml",
+        "version": "v2.7.4",
+        "version_normalized": "2.7.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/Yaml.git",
+            "reference": "2dc7b06c065df96cc686c66da2705e5e18aef661"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/Yaml/zipball/2dc7b06c065df96cc686c66da2705e5e18aef661",
+            "reference": "2dc7b06c065df96cc686c66da2705e5e18aef661",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "require-dev": {
+            "symfony/phpunit-bridge": "~2.7"
+        },
+        "time": "2015-08-24 07:13:45",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.7-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Yaml\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Yaml Component",
+        "homepage": "https://symfony.com"
     },
     {
         "name": "sebastian/version",
