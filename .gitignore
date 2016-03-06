@@ -2,3 +2,4 @@
 /libraries/vendor
 /logs/*
 /tmp/*
+.idea
