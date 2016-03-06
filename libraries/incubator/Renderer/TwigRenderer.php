@@ -41,7 +41,7 @@ class TwigRenderer extends Renderer
 	{
 		// This should be moved to a twig template file
 		$loader = new \Twig_Loader_Array(array(
-			'article' => '{{ headline | raw }} <p><small>{{attribution}}</small></p> <p>{{paragraph | raw}}</p>',
+			'article' => '{{ headline | raw }}<p><small>{{attribution}}</small></p><p>{{paragraph | raw}}</p>',
 		));
 
 		$this->twig = new \Twig_Environment($loader, array(
@@ -126,20 +126,23 @@ class TwigRenderer extends Renderer
 	 */
 	public function visitCompound(Compound $compound)
 	{
-		$this->write("<{$compound->type}>\n");
+		$len = 0;
+		$len += $this->write("<{$compound->type}>\n");
 
 		foreach ($compound->items as $item)
 		{
 			$item->accept($this);
 		}
 
-		$this->write("</{$compound->type}>\n");
-
 		$html = $this->twig->render("article", $this->replacements);
+
+		$len += strlen($html);
 
 		$this->output .= $html;
 
-		return strlen($html);
+		$len += $this->write("</{$compound->type}>\n");
+
+		return $len;
 	}
 
 	/**
