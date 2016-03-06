@@ -31,7 +31,7 @@ class Factory
 		'application/json'                  => 'JsonRenderer',
 
 		// Web/Office formats
-		'text/html'                         => 'HtmlRenderer',
+		'text/html'                         => array('HtmlRenderer', 'TwigRenderer'),
 		'application/pdf'                   => 'PdfRenderer',
 
 		// The DocBook format seems not to be registered. @link http://wiki.docbook.org/DocBookMimeType
@@ -56,7 +56,23 @@ class Factory
 			throw(new NotFoundException("No matching renderer found for\n\t$acceptHeader"));
 		}
 
-		$classname = __NAMESPACE__ . '\\' . $this->mediaTypeMap[$match['token']];
+		$renderer = $this->mediaTypeMap[$match['token']];
+
+		// Just a draft to have multiple renderer
+		if (is_array($renderer))
+		{
+			if (isset($_REQUEST['renderer']))
+			{
+				$renderer = $renderer[(int) $_REQUEST['renderer']];
+			}
+			else
+			{
+				// Take the first one
+				$renderer = $renderer[0];
+			}
+		}
+
+		$classname = __NAMESPACE__ . '\\' . $renderer;
 
 		return new $classname($match);
 	}

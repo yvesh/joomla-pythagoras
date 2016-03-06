@@ -90,6 +90,11 @@ class EntityBuilder
 			}
 		}
 
+		if ($entityName == 'error')
+		{
+			// todo
+		}
+
 		throw new FileNotFoundException("Unable to locate definition file for entity '{$entityName}'");
 	}
 
