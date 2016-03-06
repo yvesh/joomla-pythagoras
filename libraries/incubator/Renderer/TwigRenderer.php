@@ -28,16 +28,18 @@ class TwigRenderer extends Renderer
 	/** @var  ScriptStrategyInterface */
 	private $clientScript;
 
+	/** @var \Twig_Environment  */
 	private $twig;
 
+	/** @var array  Replacements for twig (key => value) */
 	private $replacements = array();
 
 	/**
-	 * TwigRenderer constructor. Initializes the twig enviornment
+	 * TwigRenderer constructor. Initializes the twig environment
 	 */
 	public function __construct($options)
 	{
-		// This should be moved to a twig template file sometime
+		// This should be moved to a twig template file
 		$loader = new \Twig_Loader_Array(array(
 			'article' => '{{ headline | raw }} <p><small>{{attribution}}</small></p> <p>{{paragraph | raw}}</p>',
 		));
